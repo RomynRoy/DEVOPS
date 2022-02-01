@@ -1,0 +1,23 @@
+version: '3.3'
+services:
+  backend:
+    build: ./Backend #le dossier
+    networks: 
+      - app-network
+    depends_on: 
+      - some-postgres #on execute d'abord la database
+    
+  some-postgres: #on utilise le nom du conteneur database pour qu'il se modifie dans le fichier application.yml
+    build: ./Database
+    networks: 
+      - app-network
+  httpd:
+    build: ./http_serveur #dossier
+    ports: 
+      - 80:80
+    networks: 
+      - app-network
+    depends_on: 
+      - backend  #on execute d'abord le backend
+networks:
+  app-network:
