@@ -148,7 +148,7 @@ ssh -i ~/Bureau/DEVOPS/key_DEVOPS/id_rsa centos@romyn.roy.takima.cloud
 On crée les dossier ansible et inventories et on place setup.yml dedans.
 On rempit le fichier setup avec le chemin absolu de la clé
 ansible all -i DEVOPS/TP_TD_3/ansible/inventories/setup.yml -m ping
-
+<img src="https://github.com/RomynRoy/DEVOPS/tree/master/img/ping.png" alt="ping"/>
 ![Ping](https://github.com/RomynRoy/DEVOPS/tree/master/img/ping.png?raw=true)
 
 ansible all -i DEVOPS/TP_TD_3/ansible/inventories/setup.yml -m setup -a "filter=ansible_distribution*"
