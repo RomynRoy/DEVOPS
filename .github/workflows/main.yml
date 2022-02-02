@@ -6,9 +6,8 @@ name: CI devops 2022 CPE
 on:
   #to begin you want to launch this job in main and develop
   push:
-    branches: [ main ]
+    branches: main
   pull_request:
-    branches: [ main ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -29,7 +28,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
               java-version: '11'
-              distribution: 'adopt'
+              distribution: 'adopt' 
       #finally build your app with the latest command
       - name: Build and test with Maven
-        run: mvn clean verify --file ./Backend/simple-api2
+        run: mvn clean verify --file ./Backend/simple-api2 #chemin de POM.xml, la ou on execute la commande
