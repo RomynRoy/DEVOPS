@@ -35,4 +35,4 @@ jobs:
           
       #finally build your app with the latest command
       - name: Build and test with Maven
-          run:[maven]
+        run: mvn clean verify --file ./Backend/simple-api2
