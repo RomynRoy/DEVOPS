@@ -109,3 +109,17 @@ git status
 git remote add origin https://github.com/RomynRoy/DEVOPS.git
 git push --set-upstream origin master #demande
 Problem de token : générer un token sur Github qui servira de mdp
+
+On se met dans le repertoire qui contient le POM.xml et on lance 'mvn clean verify'.
+
+Sur github, on va dans action et on crée un new Workflows.
+On remplit le workflow avec un main
+On accede à la version de java avec : java --version
+
+
+On securise les variables docker dans github. Cela permet de ne pas les mettre en public et donc à la vision de tous.
+On crée donc un DOCKERHUB_TOKEN et un DOCKERHUB_USERNAME.
+
+
+
+sonar : decocher un truc dans analyse methide
