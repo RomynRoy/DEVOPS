@@ -120,6 +120,21 @@ On accede à la version de java avec : java --version
 On securise les variables docker dans github. Cela permet de ne pas les mettre en public et donc à la vision de tous.
 On crée donc un DOCKERHUB_TOKEN et un DOCKERHUB_USERNAME.
 
+Le test du main dans le workflow à fonctionner.
 
+Il faut maintenant rajouter  la partie build-and-push-docker-image.
+On modifie les tag en rajoutant pour la datatbase : tags: ${{secrets.DOCKERHUB_USERNAME}}/some-postgres
+pour le backend : tags: ${{secrets.DOCKERHUB_USERNAME}}/backend
+pour le http :  tags: ${{secrets.DOCKERHUB_USERNAME}}/httpd 
+Ce sont les nom donnés dans le docker compose.
 
-sonar : decocher un truc dans analyse methide
+=> cela génère bien le image sur docker.
+
+On se connecte à sonar
+on génère un token que l'on rentre dans github
+sonar : on decoche dans analyse methode
+On integre le code fournit dans le main du workflow et on rajoute les lignes d'environnement sinon il y a une erreur.
+Dans le code fournit, on pense à changer le chemin du pom.xml, la Project Key et la Organization Key.
+On va dans new code dans le quality gate et on coche Previous version.
+
+![alt text](https://github.com/RomynRoy/DEVOPS/tree/master/sonar_passed.png?raw=true)
