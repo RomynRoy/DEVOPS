@@ -1,0 +1,111 @@
+docker network create app-network
+
+docker run --name some-postgres -e POSTGRES_PASSWORD=pwd -e POSTGRES_USER=usr -e POSTGRES_DB=db -d --network=app-network postgres //on crée la BDD sous postrgre
+
+docker run -d --link test:db --network=app-network -p 8080:8080 adminer //on utilise admirer pour s'y connecter
+Server	: test
+Username : usr
+Password : pwd
+Database : bd
+
+on crée un dossier : initdb où on place les script sql
+on rajoute dans Dockerfile "COPY initdb/ /docker-entrypoint-initdb.d" avec 
+docker build -t romyn/test . //docker rm test
+docker run -d --network=app-network -p 8888:5000 --name test romyn/test
+docker run -d --network=app-network -p 8888:5000 -v /my/own/datadir:/var/lib/postgresql/data --name test romyn/test : avec persistance
+
+
+2 Hello word :
+
+datafile : 
+FROM openjdk:11
+# TODO: Add the compiled java (aka bytecode, aka .class)
+# TODO: Run the Java with: “java Main” command.
+COPY Main.java /usr/src/app/ 
+CMD cd /usr/src/app/ ; javac Main.java  #on build avec javac
+CMD cd /usr/src/app/ ; java Main.java #puis on run
+
+#attention le controller un un .java
+
+docker build -t romyn/hello .
+commande : docker run  -p 5000:8080 --name hello romyn/hello
+
+on rajoute dans le dockerfile : CMD mvn dependency:go-offline pour qu'il ne télécharge pas toutes les dépendances
+
+
+on run : docker run -d --network=app-network -p 8888:5000 --name some-postgres romyn/test // dans docker ps on voit que le port 5432
+Dans application.yml : on remplit 
+- url: "jdbc:postgresql://some-postgres:5432/db"
+- username: usr
+- password: pwd
+docker build -t romyn/hello .
+docker run  -p 8080:8080 --name hello --network=app-network romyn/hello //on pense à le metttre dans le même network que la bdd
+3 HTTP :
+docker stats affiche : 
+CONTAINER ID   NAME      CPU %     MEM USAGE / LIMIT     MEM %     NET I/O           BLOCK I/O   PIDS
+4c58e1467abb   httpapp   0.02%     15.48MiB / 15.59GiB   0.10%     5.42kB / 1.29kB   0B / 0B     1
+
+
+
+docker logs
+ * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+172.17.0.1 - - [01/Feb/2022 10:51:44] "GET / HTTP/1.1" 200 -
+
+recupérer la conf : aller dans le dossier ou l'on veut qu'elle soit copié puis : docker run --rm httpd:2.4 cat /usr/local/apache2/conf/httpd.conf > my-httpd.conf
+
+Dockerfile :
+FROM httpd:2.4
+COPY ./index.html/ /usr/local/apache2/htdocs/ #copy l'index qui sert d'affichage
+COPY my-httpd.conf /usr/local/apache2/conf/httpd.conf #copy la conf que l'on a préalablement récup dans le fichier conf
+
+docker build -t romyn/http .
+docker run -dit --name httpapp --network=app-network -p 80:80 romyn/http
+
+
+Pour le poxy : dans my-httpd.conf
+On décommente les lignes : mod_proxy_http et mod_proxy.
+On ajoute  
+
+ServerName localhost
+
+<VirtualHost *:80>
+ProxyPreserveHost On
+ProxyPass / http://hello:8080/
+ProxyPassReverse / http://hello:8080/ #adresse de notre container
+</VirtualHost>
+
+docker run -dit --name httpapp --network=app-network -p 80:80 romyn/http
+
+DOCKER COMPOSE :
+
+
+On modifie le docker compose
+On change le nom des services du docker compose pour faire correspondre au noms que l'on a mis dans le my-httpd.conf et dans le application.yml
+On execute : docker-compose up --build
+
+docker push
+On met les images dans un repo online pour pouvoir les stocker quelque part. Ainsi les collègues travaillant sur le même projet pourront les utiliser.
+
+
+
+
+
+GITHUB
+On crée un key ssh :
+ssh-keygen -t ed25519 -C romyn.roy@cpe.fr
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+cat ~/.ssh/id_ed25519.pub
+Puis on colle dans new key sur github
+
+git init DEVOPS
+git config --global user.email romyn.roy@cpe.fr
+git config --global user.username RomynRoy
+cd DEVOPS
+touch README.md
+git add -A
+git commit -m "Initial commit"
+git status
+git remote add origin https://github.com/RomynRoy/DEVOPS.git
+git push --set-upstream origin master #demande
+Problem de token : générer un token sur Github qui servira de mdp
