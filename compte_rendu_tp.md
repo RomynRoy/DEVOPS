@@ -121,6 +121,7 @@ On securise les variables docker dans github. Cela permet de ne pas les mettre e
 On crée donc un DOCKERHUB_TOKEN et un DOCKERHUB_USERNAME.
 
 Le test du main dans le workflow à fonctionner.
+![Photo_validation](https://github.com/RomynRoy/DEVOPS/tree/master/img/docker.png.png?raw=true)
 
 Il faut maintenant rajouter  la partie build-and-push-docker-image.
 On modifie les tag en rajoutant pour la datatbase : tags: ${{secrets.DOCKERHUB_USERNAME}}/some-postgres
@@ -137,4 +138,25 @@ On integre le code fournit dans le main du workflow et on rajoute les lignes d'e
 Dans le code fournit, on pense à changer le chemin du pom.xml, la Project Key et la Organization Key.
 On va dans new code dans le quality gate et on coche Previous version.
 
-![alt text](https://github.com/RomynRoy/DEVOPS/tree/master/sonar_passed.png?raw=true)
+![Photo_validation](https://github.com/RomynRoy/DEVOPS/tree/master/img/sonar_passed.png?raw=true)
+
+ANSIBLE :
+
+chmod 400 id_rsa #pour securiser le fichier key
+ssh -i ~/Bureau/DEVOPS/key_DEVOPS/id_rsa centos@romyn.roy.takima.cloud
+
+On crée les dossier ansible et inventories et on place setup.yml dedans.
+On rempit le fichier setup avec le chemin absolu de la clé
+ansible all -i DEVOPS/TP_TD_3/ansible/inventories/setup.yml -m ping
+
+![Ping](https://github.com/RomynRoy/DEVOPS/tree/master/img/ping.png?raw=true)
+
+ansible all -i DEVOPS/TP_TD_3/ansible/inventories/setup.yml -m setup -a "filter=ansible_distribution*"
+
+![Photo setup](https://github.com/RomynRoy/DEVOPS/tree/master/img/ping2.png?raw=true)
+
+ansible-playbook -i inventories/setup.yml playbook.yml
+et  ansible-playbook -i inventories/setup.yml playbook.yml --syntax-check
+![Photo playbook](https://github.com/RomynRoy/DEVOPS/tree/master/img/playbook.png?raw=true)
+
+

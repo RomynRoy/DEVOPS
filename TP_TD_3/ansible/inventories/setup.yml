@@ -1,0 +1,7 @@
+all:
+  vars:
+    ansible_user: centos
+    ansible_ssh_private_key_file: /fs03/share/users/romyn.roy/home/Bureau/DEVOPS/key_DEVOPS/id_rsa #on met le chemin absolu
+  children:
+    prod:
+      hosts: romyn.roy.takima.cloud #l'@ donné dans le mail
