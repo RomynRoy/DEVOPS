@@ -28,7 +28,7 @@ CMD cd /usr/src/app/ ; java Main.java #puis on run
 #attention le controller un un .java
 
 docker build -t romyn/hello .
-commande : docker run  -p 5000:8080 --name hello romyn/hello
+commande : docker run  -p 5000:8080 --name hello romyn/hello #pour tester on met le port 5000 mais à terme, ce sera le port 
 
 on rajoute dans le dockerfile : CMD mvn dependency:go-offline pour qu'il ne télécharge pas toutes les dépendances
 
@@ -148,7 +148,7 @@ ssh -i ~/Bureau/DEVOPS/key_DEVOPS/id_rsa centos@romyn.roy.takima.cloud
 On crée les dossier ansible et inventories et on place setup.yml dedans.
 On rempit le fichier setup avec le chemin absolu de la clé
 ansible all -i DEVOPS/TP_TD_3/ansible/inventories/setup.yml -m ping
-<img src="https://github.com/RomynRoy/DEVOPS/tree/master/img/ping.png" alt="ping"/>
+
 ![Ping](https://github.com/RomynRoy/DEVOPS/tree/master/img/ping.png?raw=true)
 
 ansible all -i DEVOPS/TP_TD_3/ansible/inventories/setup.yml -m setup -a "filter=ansible_distribution*"
@@ -160,3 +160,16 @@ et  ansible-playbook -i inventories/setup.yml playbook.yml --syntax-check
 ![Photo playbook](https://github.com/RomynRoy/DEVOPS/tree/master/img/playbook.png?raw=true)
 
 
+1 role docker : ansible-galaxy init roles/docker
+1 role network : ansible-galaxy init roles/network
+1 role database : ansible-galaxy init roles/database
+1 role app  :  ansible-galaxy init roles/app
+1 role proxy : ansible-galaxy init roles/proxy
+
+docker : comme le playbook execute les task, on peut deplacer l'ensemble des commandes qu ise trouvaient en lui dans le main de la task docker
+network : on crée le docker_network
+database : on recupère l'image docker, on met dans le network et on passe les identifiants en variable d'environnement
+app : on récupère l'image docker, on met dans le network, On pense a rajouter le lien vers la database dans l'app.
+proxy :  on récupère l'image docker, on met dans le network, sur le port 80 
+
+![Photo validation](https://github.com/RomynRoy/DEVOPS/tree/master/img/takima.png?raw=true)
