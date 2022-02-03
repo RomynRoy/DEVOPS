@@ -173,3 +173,8 @@ app : on récupère l'image docker, on met dans le network, On pense a rajouter 
 proxy :  on récupère l'image docker, on met dans le network, sur le port 80 
 
 ![Photo validation](https://github.com/RomynRoy/DEVOPS/tree/master/img/takima.png?raw=true)
+
+SURPRISE : 
+il faut d'abord tester si le serveur marche avec : ssh -i ~/Bureau/DEVOPS/key_DEVOPS/id_rsa centos@romyn.roy.takima.cloud
+Cela nous donne une commande a exécuter pour supprimer la clé ECDSA présent dans le répertoire .ssh/known_hosts (présente depuis la dèrnière fois que l'on  a généré le serveur): ssh-keygen -f "/fs03/share/users/romyn.roy/home/.ssh/known_hosts" -R "romyn.roy.takima.cloud"
+On relance le playbook : ansible-playbook -i inventories/setup.yml playbook.yml
