@@ -3,7 +3,7 @@
   gather_facts: false
   become: yes
 
-# Install Docker
+# les rôles qui vont être execute dans l'ordre
   roles:
   - docker
   - network
