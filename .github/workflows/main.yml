@@ -46,7 +46,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Login to DockerHub
-        run: docker login -u ${{secrets.DOCKERHUB_USERNAME}} -p ${{secrets.DOCKERHUB_TOKEN}}
+        run: docker login -u ${{secrets.DOCKERHUB_USERNAME}} -p ${{secrets.DOCKERHUB_TOKEN}} #permet de se loggin à docker avec nos mdp secret que l'on a ajoutés à GitHub
 
       - name: Build image and push backend
         uses: docker/build-push-action@v2
@@ -71,6 +71,6 @@ jobs:
           # relative path to the place where source code with Dockerfile is located
           context: ./http_serveur
           # Note: tags has to be all lower-case
-          tags: ${{secrets.DOCKERHUB_USERNAME}}/httpd
+          tags: ${{secrets.DOCKERHUB_USERNAME}}/httpd #le nom du serveur web sur docker
           push: ${{ github.ref == 'refs/heads/master' }}
     
