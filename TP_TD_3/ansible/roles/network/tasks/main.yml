@@ -2,4 +2,4 @@
 # tasks file for roles/network
 - name: create network  
   docker_network:
-    name: app-network 
+    name: app-network #crée le network qui a pour nom app-network
