@@ -1,0 +1,1 @@
+Premier test de l'api en simple stage. Dans le TP, onglet Basics sous Backend API.
