@@ -1,6 +1,7 @@
+#comme le playbook execute les task, on peut deplacer l'ensemble des commandes qui se trouvaient en lui ici
 - name: Clean packages
   command:
-    cmd: dnf clean -y packages #permet de nettoyer les informations mises en cache
+    cmd: dnf clean -y packages #execute la commande permet de nettoyer les informations mises en cache
 - name: Install device-mapper-persistent-data
   dnf:
     name: device-mapper-persistent-data
@@ -11,7 +12,7 @@
     state: latest
 - name: add repo docker
   command:
-    cmd: sudo dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+    cmd: sudo dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo #ajoute un repo docker
 - name: Install Docker
   dnf:
     name: docker-ce
