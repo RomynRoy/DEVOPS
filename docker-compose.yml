@@ -1,22 +1,22 @@
-version: '3.3'
+version: '3.3' #les ordinateurs de CPE n'ont pas de versions ultérieures à celle-ci
 services:
   backend:
-    build: ./Backend #le dossier
+    build: ./Backend #le dossier ou se situe le dockerfile du conteneur
     networks: 
-      - app-network
+      - app-network #le nom du network qui sera le même pour les 3 conteneurs.
     depends_on: 
       - some-postgres #on execute d'abord la database
     
   some-postgres: #on utilise le nom du conteneur database pour qu'il se modifie dans le fichier application.yml
-    build: ./Database
+    build: ./Database #le dossier ou se situe le dockerfile du conteneur
     networks: 
-      - app-network
+      - app-network #le nom du network qui sera le même pour les 3 conteneurs.
   httpd:
-    build: ./http_serveur #dossier
+    build: ./http_serveur #le dossier ou se situe le dockerfile du conteneur
     ports: 
       - 80:80
     networks: 
-      - app-network
+      - app-network #le nom du network qui sera le même pour les 3 conteneurs.
     depends_on: 
       - backend  #on execute d'abord le backend
 networks:
