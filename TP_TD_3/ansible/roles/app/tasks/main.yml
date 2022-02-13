@@ -5,6 +5,6 @@
     name: backend #app
     image: romyn/backend #nom sur docker hub
     networks: 
-      - name: app-network
+      - name: app-network #tous dans le même network
     env:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/db
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/db #lien de la bdd passée en variable d'environnement
