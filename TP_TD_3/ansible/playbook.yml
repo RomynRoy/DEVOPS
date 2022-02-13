@@ -1,7 +1,7 @@
 
-- hosts: all
-  gather_facts: false
-  become: yes
+- hosts: all #exécuter sur tous les hôtes
+  gather_facts: false #permet de gagner du temps en desactivant la récolte par Ansible des informations sur les hosts
+  become: yes #set to to activate privilege escalation
 
 # les rôles qui vont être execute dans l'ordre
   roles:
