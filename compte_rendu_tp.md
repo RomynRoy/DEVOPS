@@ -53,7 +53,7 @@ FROM openjdk:11-jre #initialise une nouvelle étape de génération
 ENV MYAPP_HOME /opt/myapp
 WORKDIR $MYAPP_HOME
 COPY --from=myapp-build $MYAPP_HOME/target/*.jar $MYAPP_HOME/myapp.jar
-ENTRYPOINT java -jar myapp.jar #cela permet aux arguments de passer en point d'entrée
+ENTRYPOINT java -jar myapp.jar #programme par défault lorsque le container démarre
 
 on run : docker run -d --network=app-network -p 8888:5000 --name some-postgres romyn/test // dans docker ps on voit que le port 5432
 Dans application.yml : on remplit 
