@@ -4,5 +4,5 @@
     name: proxy 
     image: romyn/httpd #nom sur docker hub
     networks: 
-      - name: app-network
-    ports: 80:80
+      - name: app-network #tous sur le même network
+    ports: 80:80 #port de l'affichage
