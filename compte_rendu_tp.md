@@ -70,7 +70,7 @@ CONTAINER ID   NAME      CPU %     MEM USAGE / LIMIT     MEM %     NET I/O      
 4c58e1467abb   httpapp   0.02%     15.48MiB / 15.59GiB   0.10%     5.42kB / 1.29kB   0B / 0B     1
 
 docker logs
- * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+ * Running on http://0.0.0.0:80/ (Press CTRL+C to quit)
 172.17.0.1 - - [01/Feb/2022 10:51:44] "GET / HTTP/1.1" 200 -
 
 recupérer la conf : aller dans le dossier ou l'on veut qu'elle soit copié puis : docker run --rm httpd:2.4 cat /usr/local/apache2/conf/httpd.conf > my-httpd.conf
