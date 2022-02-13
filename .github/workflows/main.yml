@@ -7,35 +7,30 @@ on:
   pull_request:
 
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   backend:
-    # The type of runner that the job will run on
+    #version sur lequel le job va run
     runs-on: ubuntu-18.04
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    # sequence de taches qui vont être execute
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
     
-      #do the same with another action (actions/setup-java@v2) that enable to setup jdk 11
       - name: Set up JDK 11
         uses: actions/setup-java@v2
         with:
               java-version: '11'
               distribution: 'adopt' 
-      #finally build your app with the latest command
+
       - name: Build and test with Maven
         env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any #On rajoute ce token car il y a une erreur sinon
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  #On rajoute ce token car il y a une erreur sinon
             SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} 
         #run: mvn clean verify --file ./Backend/simple-api2 #chemin de POM.xml, la ou on execute la commande
         run: mvn -B verify sonar:sonar -Dsonar.projectKey=RomynRoy_DEVOPS2 -Dsonar.organization=romynroy2 -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{secrets.SONAR_TOKEN }} --file ./Backend/simple-api2/pom.xml
   build-and-push-docker-image:
     needs: backend
-    # run only when code is compiling and tests are passing
+    # run lorsque la compilation et les tests sont finis
     runs-on: ubuntu-latest
-    # steps to perform in job
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -46,26 +41,21 @@ jobs:
       - name: Build image and push backend
         uses: docker/build-push-action@v2
         with:
-          # relative path to the place where source code with Dockerfile is located
+          # chemin du dockerfile de backend
           context: ./Backend
-          # Note: tags has to be all lower-case
-          tags: ${{secrets.DOCKERHUB_USERNAME}}/backend
+          tags: ${{secrets.DOCKERHUB_USERNAME}}/backend #le nom du backend enregistré sur docker
           push: ${{ github.ref == 'refs/heads/master' }}
 
       - name: Build image and push database
         uses: docker/build-push-action@v2
         with:
-          # relative path to the place where source code with Dockerfile is located
-          context: ./Database
-          # Note: tags has to be all lower-case
-          tags: ${{secrets.DOCKERHUB_USERNAME}}/some-postgres
+          context: ./Database # chemin du dockerfile de la bdd 
+          tags: ${{secrets.DOCKERHUB_USERNAME}}/some-postgres #le nom de la bdd enregistré sur docker
           push: ${{ github.ref == 'refs/heads/master' }}
       - name: Build image and push httpd
         uses: docker/build-push-action@v2
         with:
-          # relative path to the place where source code with Dockerfile is located
-          context: ./http_serveur
-          # Note: tags has to be all lower-case
-          tags: ${{secrets.DOCKERHUB_USERNAME}}/httpd #le nom du serveur web sur docker
+          context: ./http_serveur # chemin du dockerfile de serveur web
+          tags: ${{secrets.DOCKERHUB_USERNAME}}/httpd #le nom du serveur web enregistré sur docker
           push: ${{ github.ref == 'refs/heads/master' }}
     
