@@ -4,25 +4,25 @@
     cmd: dnf clean -y packages #execute la commande permet de nettoyer les informations mises en cache
 - name: Install device-mapper-persistent-data
   dnf:
-    name: device-mapper-persistent-data
-    state: latest
+    name: device-mapper-persistent-data #installe le package device-mapper-persistent-data
+    state: latest #dernière version du package
 - name: Install lvm2
   dnf:
-    name: lvm2
-    state: latest
+    name: lvm2 #installe le package lvm2
+    state: latest #dernière version du package
 - name: add repo docker
   command:
     cmd: sudo dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo #ajoute un repo docker
 - name: Install Docker
   dnf:
-    name: docker-ce
+    name: docker-ce #installe le package docker-ce
     state: present
 - name: install python3
   dnf:
-    name: python3
+    name: python3 #installe le package python3
 - name: Pip install
   pip:
-    name: docker
+    name: docker #installe le package docker
 - name: Make sure Docker is running
-  service: name=docker state=started
+  service: name=docker state=started #vérifie que docker est lancé
   tags: docker
