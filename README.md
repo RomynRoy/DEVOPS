@@ -22,6 +22,13 @@ docker build -t romyn/test . //docker rm test sert à supprimer test
 docker run -d --network=app-network -p 8888:5000 --name test romyn/test
 docker run -d --network=app-network -p 8888:5000 -v /my/own/datadir:/var/lib/postgresql/data --name test romyn/test : avec persistance
 
+dockerfile :
+FROM postgres:11.6-alpine #Image utilisée
+ENV POSTGRES_DB=db \   #différentes variables d'env nécessaire pour la base postgres
+POSTGRES_USER=usr \
+POSTGRES_PASSWORD=pwd
+
+COPY initdb/ /docker-entrypoint-initdb.d #permet de copier les script sql présents dans initdb pour qu'ils soient exécutés
 
 2 Backend API :
 
@@ -38,21 +45,21 @@ commande : docker run  -p 5000:8080 --name hello romyn/hello #pour tester on met
 
 on rajoute dans le dockerfile : CMD mvn dependency:go-offline #pour qu'il ne télécharge pas toutes les dépendances à chaque fois ce qui prend du temps et , si on est sur 4g, coûte en terme de quantité de données téléchargés.
 
-Why do we need a multistage build ? 
+1-2 Why do we need a multistage build ? 
 On a besoin de multisage buid car le build et le run ne s'effectue pas das la même image, respectivement, maven:3.6.3-jdk-11 et openjdk:11-jre.
-And explain each steps of this dockerfile :
+1-2 And explain each steps of this dockerfile :
 #Build
 FROM maven:3.6.3-jdk-11 AS myapp-build  #définit l’image de base pour les instructions suivantes
 ENV MYAPP_HOME /opt/myapp #env permet de déclarer les variables d'environnement
-WORKDIR $MYAPP_HOME  #WORKDIR définit le répertoire de travail pour toutes les instructions qui le suivent dans le fichier . Si le  répertoire n’existe pas, il sera créé même s’il n’est pas utilisé dans une instruction ultérieure
-COPY pom.xml . #L’instruction copie les nouveaux fichiers ou répertoires à partir et les ajoute au système de fichiers du conteneur au niveau du chemin d’accès. Ici pom.xml est positionner à la racine du conteneur.
+WORKDIR $MYAPP_HOME  #WORKDIR définit le répertoire de travail pour toutes les instructions qui suivent. Si le  répertoire n’existe pas, il sera créé. Ici il s'agit du dossier /opt/myapp féfinit par la variable MYAPP_HOME
+COPY pom.xml . #L’instruction copie les nouveaux fichiers ou répertoires et les ajoute au système de fichiers du conteneur au niveau du chemin d’accès. Ici pom.xml est positionner à la racine du conteneur.
 COPY src ./src 
 RUN mvn package -DskipTests #cela va exécuter dans maven.
 #Run
 FROM openjdk:11-jre #initialise une nouvelle étape de génération
 ENV MYAPP_HOME /opt/myapp
 WORKDIR $MYAPP_HOME
-COPY --from=myapp-build $MYAPP_HOME/target/*.jar $MYAPP_HOME/myapp.jar
+COPY --from=myapp-build $MYAPP_HOME/target/*.jar $MYAPP_HOME/myapp.jar #récupère ce qui a été build précédemment et le place dans myapp.jar
 ENTRYPOINT java -jar myapp.jar #programme par défault lorsque le container démarre
 
 on run : docker run -d --network=app-network -p 8888:5000 --name some-postgres romyn/test // dans docker ps on voit que le port 5432
@@ -104,16 +111,24 @@ On en a besoin pour protéger l'identité du serveur web.
 
 DOCKER COMPOSE :
 
+1-3 Document docker-compose most important commands
+Parmis les lignes du docker-compose fourni, 'depends_on' permet d'attendre la fin d'un container avant d'en exécuter un autre. 'build' doit avoir le chemin du dockerfile pour chaque container. 'network' tous les container sont dans le même network.
+
 On modifie le docker compose
 On change le nom des services du docker compose pour faire correspondre aux noms que l'on a mis dans le my-httpd.conf et dans le application.yml
 On execute : docker-compose up --build
-(voir le docker-compose pour les cometaires)
+
+1-4 Document your docker-compose file (voir le docker-compose pour les cometaires)
 
 
 Why is docker-compose so important ?
 Docker Compose est un outil qui a été développé pour aider à définir et partager des applications multi-conteneurs. Avec Compose, nous pouvons créer un fichier YAML pour définir les services et avec une seule commande, nous pouvons tout faire tourner, c'est donc très important qu'il soit correct et fonctionnel.
 
-docker push
+1-5 Document your publication commands and published images in dockerhub
+On peut maintenant publier les images que l'on a créés :
+
+docker tag some-postgres romyn/my-bdd:1.0
+docker push my-bdd
 
 Why do we put our images into an online repository ?
 On met les images dans un repo online pour pouvoir les stocker quelque part. Ainsi les collègues travaillant sur le même projet pourront les utiliser.
@@ -148,15 +163,23 @@ On se met dans le repertoire qui contient le POM.xml et on lance 'mvn clean veri
 'mvn clean' permet de supprimer les fichiers générés par les précédentes générations	
 'verify' permet d'exécuter des contrôles de validation et de qualité
 
+2-1 What are testcontainers?
+Testcontainers est une bibliothèque Java qui prend en charge les tests JUnit, fournissant des instances légères et jetables de bases de données.
+Les testcontainers facilitent les types de tests suivants :
+Tests d’intégration de la couche d’accès aux données
+Tests d’intégration d’application
+Testcontainers est dépandant de maven.
+
+2-2 Document your Github Actions configurations (voir le main.yml)
 Sur github, on va dans action et on crée un new Workflows.
-On remplit le workflow avec un main
+On remplit le workflow avec un main.yml
 On accède à la version de java de l'ordinateur avec : java --version
 
 Secured variables, why ?
 On securise les variables docker dans github. Cela permet de ne pas les mettre en public et donc à la vision de tous.
 On crée donc un DOCKERHUB_TOKEN et un DOCKERHUB_USERNAME.
 
-Le test du main dans le workflow à fonctionner.
+Le test du main dans le workflow a fonctionné.
 ![Photo_validation](https://github.com/RomynRoy/DEVOPS/tree/master/img/docker.png?raw=true)
 
 Il faut maintenant rajouter  la partie build-and-push-docker-image.
@@ -167,6 +190,7 @@ Ce sont les nom donnés dans le docker compose.
 
 => cela génère bien le image sur docker.
 
+2-3 Document your quality gate configuration
 On se connecte à sonar
 on génère un token que l'on rentre dans github
 sonar : on décoche dans analyse methode
@@ -184,22 +208,27 @@ On va dans new code dans le quality gate et on coche Previous version.
 TP part 03 - Ansible
 1 Intro
 
+3-1 Document your inventory and base commands
 chmod 400 id_rsa #pour securiser le fichier key
 ssh -i ~/Bureau/DEVOPS/key_DEVOPS/id_rsa centos@romyn.roy.takima.cloud pour lancer le serveur ssh
 
 On crée les dossier ansible et inventories et on place setup.yml dedans.
 On rempit le fichier setup avec le chemin absolu de la clé
 ansible all -i DEVOPS/TP_TD_3/ansible/inventories/setup.yml -m ping permet de ping le serveur
+'all' : ansible exécute la commande sur tous les hôtes présents dans l'inventaire
+'-m ping' : on utilise le module ping
+'-i' permet de spécifier un chemin d'inventaire différent qui est de base sur /etc/ansible/hosts
 
 ![Ping](https://github.com/RomynRoy/DEVOPS/tree/master/img/ping.png?raw=true)
 
 ansible all -i DEVOPS/TP_TD_3/ansible/inventories/setup.yml -m setup -a "filter=ansible_distribution*"
-
+'-a' permet permet de fournir des informations suplémentaires à la commande '-m'
 ![Photo setup](https://github.com/RomynRoy/DEVOPS/tree/master/img/ping2.png?raw=true)
 
 
 2 Playbooks
 
+3-2 Document your playbook 
 ansible-playbook -i inventories/setup.yml playbook.yml #permet d'executer le playbook
 et  ansible-playbook -i inventories/setup.yml playbook.yml --syntax-check
 ![Photo playbook](https://github.com/RomynRoy/DEVOPS/tree/master/img/playbook.png?raw=true)
@@ -211,6 +240,7 @@ et  ansible-playbook -i inventories/setup.yml playbook.yml --syntax-check
 1 role app  :  ansible-galaxy init roles/app
 1 role proxy : ansible-galaxy init roles/proxy
 
+3-3 Document your docker_container tasks configuration.(voir les commentaires des tasks)
 docker : comme le playbook execute les task, on peut deplacer l'ensemble des commandes qui se trouvaient en lui dans le main de la task docker
 network : on crée le docker_network
 database : on recupère l'image docker, on met dans le network et on passe les identifiants en variable d'environnement
