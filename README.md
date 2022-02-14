@@ -2,7 +2,7 @@
 
 ## TP part 01 - Docker
 
-###1 Database
+### 1 Database
 
 docker network create app-network
 Cela permet de créer un nouveau network dans lequel il y aura nos docker.
