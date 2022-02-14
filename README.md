@@ -47,7 +47,7 @@ commande : docker run  -p 5000:8080 --name hello romyn/hello #pour tester on met
 
 on rajoute dans le dockerfile : CMD mvn dependency:go-offline #pour qu'il ne télécharge pas toutes les dépendances à chaque fois ce qui prend du temps et , si on est sur 4g, coûte en terme de quantité de données téléchargés.
 
-1-2 Why do we need a multistage build ? 
+1-2 Why do we need a multistage build ? <br/>
 On a besoin de multisage buid car le build et le run ne s'effectuent pas das la même image, respectivement, maven:3.6.3-jdk-11 et openjdk:11-jre.
 1-2 And explain each steps of this dockerfile :
 #Build
