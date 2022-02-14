@@ -1,6 +1,8 @@
-TP part 01 - Docker
+# TP DEVOPS Romyn ROY 2022
 
-1 Database
+## TP part 01 - Docker
+
+###1 Database
 
 docker network create app-network
 Cela permet de créer un nouveau network dans lequel il y aura nos docker.
@@ -30,7 +32,7 @@ POSTGRES_PASSWORD=pwd
 
 COPY initdb/ /docker-entrypoint-initdb.d #permet de copier les script sql présents dans initdb pour qu'ils soient exécutés
 
-2 Backend API :
+### 2 Backend API :
 
 datafile : 
 FROM openjdk:11
@@ -70,7 +72,7 @@ Dans application.yml : on remplit
 docker build -t romyn/hello .
 docker run  -p 8080:8080 --name hello --network=app-network romyn/hello //on pense à le metttre dans le même network que la bdd
 
-3 Http server :
+### 3 Http server :
 
 docker stats affiche : 
 CONTAINER ID   NAME      CPU %     MEM USAGE / LIMIT     MEM %     NET I/O           BLOCK I/O   PIDS
@@ -82,7 +84,7 @@ docker logs
 
 recupérer la conf : aller dans le dossier ou l'on veut qu'elle soit copiée puis : docker run --rm httpd:2.4 cat /usr/local/apache2/conf/httpd.conf > my-httpd.conf
 
-Dockerfile :
+#### Dockerfile :
 FROM httpd:2.4
 COPY ./index.html/ /usr/local/apache2/htdocs/ #copy l'index qui sert d'affichage
 COPY my-httpd.conf /usr/local/apache2/conf/httpd.conf #copy la conf que l'on a préalablement récup dans le fichier conf
@@ -90,7 +92,7 @@ COPY my-httpd.conf /usr/local/apache2/conf/httpd.conf #copy la conf que l'on a p
 docker build -t romyn/http .
 docker run -dit --name httpapp --network=app-network -p 80:80 romyn/http
 
-Proxy :
+#### Proxy :
 
 Pour le proxy : dans my-httpd.conf
 On décommente les lignes : mod_proxy_http et mod_proxy pour activer le proxy.
@@ -109,7 +111,7 @@ docker run -dit --name httpapp --network=app-network -p 80:80 romyn/http
 Why do we need a reverse proxy ?
 On en a besoin pour protéger l'identité du serveur web.
 
-DOCKER COMPOSE :
+### DOCKER COMPOSE :
 
 1-3 Document docker-compose most important commands
 Parmis les lignes du docker-compose fournies, 'depends_on' permet d'attendre la fin d'un container avant d'en exécuter un autre. 'build' doit avoir le chemin du dockerfile pour chaque container. 'network' tous les container sont dans le même network.
@@ -136,7 +138,7 @@ On met les images dans un repo online pour pouvoir les stocker quelque part. Ain
 
 
 
-TP part 02 - CI/CD
+## TP part 02 - CI/CD
 
 GITHUB
 On crée un key ssh :
@@ -205,7 +207,7 @@ On va dans new code dans le quality gate et on coche Previous version.
 
 
 
-TP part 03 - Ansible
+## TP part 03 - Ansible
 1 Intro
 
 3-1 Document your inventory and base commands
