@@ -10,7 +10,7 @@ docker run --name some-postgres -e POSTGRES_PASSWORD=pwd -e POSTGRES_USER=usr -e
 Why should we run the container with a flag -e to give the environment variables ?
 Le -e permet de déclarer les variables d'environnement. On peut aussi utiliser un -env. 
 
-docker run -d --link test:db --network=app-network -p 8080:8080 adminer //on utilise admirer pour se connecter a la bdd
+docker run -d --link test:db --network=app-network -p 8080:8080 adminer //on utilise admirer pour se connecter à la bdd
 Server	: test
 Username : usr
 Password : pwd
@@ -24,7 +24,7 @@ docker run -d --network=app-network -p 8888:5000 -v /my/own/datadir:/var/lib/pos
 
 dockerfile :
 FROM postgres:11.6-alpine #Image utilisée
-ENV POSTGRES_DB=db \   #différentes variables d'env nécessaire pour la base postgres
+ENV POSTGRES_DB=db \   #différentes variables d'env nécessaires pour la base postgres
 POSTGRES_USER=usr \
 POSTGRES_PASSWORD=pwd
 
@@ -34,7 +34,7 @@ COPY initdb/ /docker-entrypoint-initdb.d #permet de copier les script sql prése
 
 datafile : 
 FROM openjdk:11
-COPY Main.java /usr/src/app/ On copy Main.java dans app
+COPY Main.java /usr/src/app/ #On copy Main.java dans app
 CMD cd /usr/src/app/ ; javac Main.java  #on build avec javac
 CMD cd /usr/src/app/ ; java Main.java #puis on run
 
@@ -46,12 +46,12 @@ commande : docker run  -p 5000:8080 --name hello romyn/hello #pour tester on met
 on rajoute dans le dockerfile : CMD mvn dependency:go-offline #pour qu'il ne télécharge pas toutes les dépendances à chaque fois ce qui prend du temps et , si on est sur 4g, coûte en terme de quantité de données téléchargés.
 
 1-2 Why do we need a multistage build ? 
-On a besoin de multisage buid car le build et le run ne s'effectue pas das la même image, respectivement, maven:3.6.3-jdk-11 et openjdk:11-jre.
+On a besoin de multisage buid car le build et le run ne s'effectuent pas das la même image, respectivement, maven:3.6.3-jdk-11 et openjdk:11-jre.
 1-2 And explain each steps of this dockerfile :
 #Build
 FROM maven:3.6.3-jdk-11 AS myapp-build  #définit l’image de base pour les instructions suivantes
 ENV MYAPP_HOME /opt/myapp #env permet de déclarer les variables d'environnement
-WORKDIR $MYAPP_HOME  #WORKDIR définit le répertoire de travail pour toutes les instructions qui suivent. Si le  répertoire n’existe pas, il sera créé. Ici il s'agit du dossier /opt/myapp féfinit par la variable MYAPP_HOME
+WORKDIR $MYAPP_HOME  #WORKDIR définit le répertoire de travail pour toutes les instructions qui suivent. Si le  répertoire n’existe pas, il sera créé. Ici il s'agit du dossier /opt/myapp définit par la variable MYAPP_HOME
 COPY pom.xml . #L’instruction copie les nouveaux fichiers ou répertoires et les ajoute au système de fichiers du conteneur au niveau du chemin d’accès. Ici pom.xml est positionner à la racine du conteneur.
 COPY src ./src 
 RUN mvn package -DskipTests #cela va exécuter dans maven.
@@ -80,7 +80,7 @@ docker logs
  * Running on http://0.0.0.0:80/ (Press CTRL+C to quit)
 172.17.0.1 - - [01/Feb/2022 10:51:44] "GET / HTTP/1.1" 200 -
 
-recupérer la conf : aller dans le dossier ou l'on veut qu'elle soit copié puis : docker run --rm httpd:2.4 cat /usr/local/apache2/conf/httpd.conf > my-httpd.conf
+recupérer la conf : aller dans le dossier ou l'on veut qu'elle soit copiée puis : docker run --rm httpd:2.4 cat /usr/local/apache2/conf/httpd.conf > my-httpd.conf
 
 Dockerfile :
 FROM httpd:2.4
@@ -112,7 +112,7 @@ On en a besoin pour protéger l'identité du serveur web.
 DOCKER COMPOSE :
 
 1-3 Document docker-compose most important commands
-Parmis les lignes du docker-compose fourni, 'depends_on' permet d'attendre la fin d'un container avant d'en exécuter un autre. 'build' doit avoir le chemin du dockerfile pour chaque container. 'network' tous les container sont dans le même network.
+Parmis les lignes du docker-compose fournies, 'depends_on' permet d'attendre la fin d'un container avant d'en exécuter un autre. 'build' doit avoir le chemin du dockerfile pour chaque container. 'network' tous les container sont dans le même network.
 
 On modifie le docker compose
 On change le nom des services du docker compose pour faire correspondre aux noms que l'on a mis dans le my-httpd.conf et dans le application.yml
@@ -212,12 +212,12 @@ TP part 03 - Ansible
 chmod 400 id_rsa #pour securiser le fichier key
 ssh -i ~/Bureau/DEVOPS/key_DEVOPS/id_rsa centos@romyn.roy.takima.cloud pour lancer le serveur ssh
 
-On crée les dossier ansible et inventories et on place setup.yml dedans.
+On crée les dossiers ansible et inventories et on place setup.yml dedans.
 On rempit le fichier setup avec le chemin absolu de la clé
 ansible all -i DEVOPS/TP_TD_3/ansible/inventories/setup.yml -m ping permet de ping le serveur
 'all' : ansible exécute la commande sur tous les hôtes présents dans l'inventaire
 '-m ping' : on utilise le module ping
-'-i' permet de spécifier un chemin d'inventaire différent qui est de base sur /etc/ansible/hosts
+'-i' : permet de spécifier un chemin d'inventaire différent qui est de base sur /etc/ansible/hosts
 
 ![Ping](https://github.com/RomynRoy/DEVOPS/tree/master/img/ping.png?raw=true)
 
@@ -228,7 +228,7 @@ ansible all -i DEVOPS/TP_TD_3/ansible/inventories/setup.yml -m setup -a "filter=
 
 2 Playbooks
 
-3-2 Document your playbook 
+3-2 Document your playbook (voir commentaires du playbook)
 ansible-playbook -i inventories/setup.yml playbook.yml #permet d'executer le playbook
 et  ansible-playbook -i inventories/setup.yml playbook.yml --syntax-check
 ![Photo playbook](https://github.com/RomynRoy/DEVOPS/tree/master/img/playbook.png?raw=true)
