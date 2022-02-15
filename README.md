@@ -36,7 +36,7 @@ COPY initdb/ /docker-entrypoint-initdb.d #permet de copier les script sql prése
 
 datafile :  <br/>
 FROM openjdk:11 <br/>
-COPY Main.java /usr/src/app/ #On copy Main.java dans app <br/>
+COPY Main.java /usr/src/app/ #On copie Main.java dans app <br/>
 CMD cd /usr/src/app/ ; javac Main.java  #on build avec javac <br/>
 CMD cd /usr/src/app/ ; java Main.java #puis on run
 
@@ -127,7 +127,7 @@ Why is docker-compose so important ? <br/>
 Docker Compose est un outil qui a été développé pour aider à définir et partager des applications multi-conteneurs. Avec Compose, nous pouvons créer un fichier YAML pour définir les services et avec une seule commande, nous pouvons tout faire tourner, c'est donc très important qu'il soit correct et fonctionnel.
 
 1-5 Document your publication commands and published images in dockerhub <br/>
-On peut maintenant publier les images que l'on a créés :
+On peut maintenant publier les images que l'on a créées :
 
 docker tag some-postgres romyn/my-bdd:1.0 <br/>
 docker push my-bdd
