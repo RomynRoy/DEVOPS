@@ -214,6 +214,8 @@ On va dans new code dans le quality gate et on coche Previous version.
 chmod 400 id_rsa #pour securiser le fichier key <br/>
 ssh -i ~/Bureau/DEVOPS/key_DEVOPS/id_rsa centos@romyn.roy.takima.cloud pour lancer le serveur ssh
 
+Commandes : ansible all --list-hosts : cette commande va lister tous les hosts présents 
+
 On crée les dossiers ansible et inventories et on place setup.yml dedans. <br/>
 On rempit le fichier setup avec le chemin absolu de la clé <br/>
 ansible all -i DEVOPS/TP_TD_3/ansible/inventories/setup.yml -m ping permet de ping le serveur <br/>
@@ -223,6 +225,8 @@ ansible all -i DEVOPS/TP_TD_3/ansible/inventories/setup.yml -m ping permet de pi
 
 ![Ping](https://github.com/RomynRoy/DEVOPS/tree/master/img/ping.png?raw=true)
 
+ansible all -i inventories/setup.yml -m yum -a "name=httpd state=absent" --become : supprime httpd server
+"--become" : super utilisateur
 ansible all -i DEVOPS/TP_TD_3/ansible/inventories/setup.yml -m setup -a "filter=ansible_distribution*" <br/>
 '-a' permet permet de fournir des informations suplémentaires à la commande '-m' <br/>
 ![Photo setup](https://github.com/RomynRoy/DEVOPS/tree/master/img/ping2.png?raw=true)
