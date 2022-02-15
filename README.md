@@ -10,7 +10,7 @@ Cela permet de créer un nouveau network dans lequel il y aura nos docker.
 docker run --name some-postgres -e POSTGRES_PASSWORD=pwd -e POSTGRES_USER=usr -e POSTGRES_DB=db -d --network=app-network postgres //on crée la BDD sous postrgre
 
 Why should we run the container with a flag -e to give the environment variables ? <br/>
-Le -e permet de déclarer les variables d'environnement. On peut aussi utiliser un -env. 
+Le -e permet de déclarer les variables d'environnement. On peut aussi utiliser un -env. Cela permet donc de passer les identifiants de connexion à la BDD.
 
 docker run -d --link test:db --network=app-network -p 8080:8080 adminer //on utilise admirer pour se connecter à la bdd <br/>
 Server	: test <br/>
